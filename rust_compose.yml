@@ -1,0 +1,30 @@
+version: '3.3'
+
+services:
+  rust-backend:
+    image: rust:latest
+    environment:
+      - BACKEND=${BACKEND}
+    volumes:
+      - .:/usr/src/myapp
+      - /usr/src/myapp/target
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+      if [ '${BACKEND}' = 'actix-web' ]; then
+        cargo run --bin actix-web-server;
+      elif [ '${BACKEND}' = 'rocket' ]; then
+        cargo run --bin rocket-server;
+      elif [ '${BACKEND}' = 'warp' ]; then
+        cargo run --bin warp-server;
+      elif [ '${BACKEND}' = 'leptos' ]; then
+        cargo run --bin leptos-server;
+      elif [ '${BACKEND}' = 'axum' ]; then
+        cargo run --bin axum-server;
+      elif [ '${BACKEND}' = 'tide' ]; then
+        cargo run --bin tide-server;
+      else
+        echo 'Invalid backend selected';
+      fi
+      "
